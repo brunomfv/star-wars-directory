@@ -25,7 +25,7 @@ To get started with the project, follow these steps:
 1. **Start the development server**:
 
     ```sh
-    npm start
+    npm run dev
     ```
 
 1. **Open the application**: Open your browser and navigate to http://localhost:5173
