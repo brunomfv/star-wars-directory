@@ -53,9 +53,15 @@ const Wrapper = styled.div`
 `
 
 const CharacterList = () => {
-    const [page, setPage] = useState(1)
+    const currentLocation = new URL(window.location.href)
 
-    const [search, setSearch] = useState('')
+    const searchParam = currentLocation.searchParams.get('search') || ''
+
+    const pageParam = Number(currentLocation.searchParams.get('page')) || 1
+    
+    const [page, setPage] = useState(pageParam)
+
+    const [search, setSearch] = useState(searchParam)
 
     const debouncedSearchValue = useDebounce(search, 500)
 
@@ -69,19 +75,35 @@ const CharacterList = () => {
         },
     })
 
+    const updateUrlSearchParam = (key: string, value: string) => {
+        if (!currentLocation.searchParams.has(key)) {
+            currentLocation.searchParams.append(key, value)
+        } else {
+            currentLocation.searchParams.set(key, value)
+        }
+
+        window.history.pushState({}, '', currentLocation.href)
+    }
+
     const handleSearchInputChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
+        updateUrlSearchParam('search', event.target.value)
+
         setSearch(event.target.value)
     }
 
     const handlePreviousPageClick = () => {
         if (page > 1) {
+            updateUrlSearchParam('page', (page - 1).toString())
+
             setPage(page - 1)
         }
     }
 
     const handleNextPageClick = () => {
+        updateUrlSearchParam('page', (page + 1).toString())
+
         setPage(page + 1)
     }
 
